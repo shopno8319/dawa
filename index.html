@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>জনশক্তি ব্যবস্থাপনা ও ডাটাবেজ সফটওয়্যার (V4)</title>
+    <title>জনশক্তি ব্যবস্থাপনা ও ডাটাবেজ সফটওয়্যার (V4 - ক্লাউড ব্যাকএন্ড)</title>
+    <!-- Firebase SDK (অনলাইন ক্লাউড ডাটাবেজ কানেক্টর) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
     <style>
         :root {
             --primary: #047857;
@@ -68,7 +72,7 @@
         .popup-paper { background: white; max-width: 850px; margin: 30px auto; padding: 40px; border-radius: 6px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .close-btn { position: absolute; top: 15px; right: 15px; background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
 
-        /* Clean Biodata Layout (শর্ত অনুযায়ী) */
+        /* Clean Biodata Layout */
         .bio-title-only { text-align: center; font-size: 26px; font-weight: bold; margin-bottom: 30px; letter-spacing: 2px; border-bottom: 2px solid #000; padding-bottom: 10px; }
         .bio-field { display: flex; border-bottom: 1px dashed #ccc; padding: 10px 0; font-size: 16px; }
         .bio-label { width: 30%; font-weight: bold; color: #333; }
@@ -76,12 +80,11 @@
         .bio-pic { float: right; width: 120px; height: 140px; border: 1px solid #999; display: flex; align-items: center; justify-content: center; background: #fafafa; margin-left: 15px; }
         .bio-pic img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Clean List Layout (শর্ত অনুযায়ী) */
+        /* Clean List Layout */
         .print-list-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .print-list-table th, .print-list-table td { border: 1px solid #000; padding: 8px; font-size: 13px; color: black; }
         .print-list-table th { background: #f2f2f2 !important; }
 
-        /* Print Media CSS */
         @media print {
             body * { visibility: hidden; }
             .popup-overlay, .popup-overlay * { visibility: visible; }
@@ -93,7 +96,7 @@
 </head>
 <body>
 
-<!-- ১. লগইন স্ক্রিন (ইউজার ও পাসওয়ার্ড সিস্টেম) -->
+<!-- লগইন স্ক্রিন -->
 <div class="login-screen" id="loginScreen">
     <div class="login-card">
         <h2>ডাটাবেজ লগইন প্যানেল</h2>
@@ -112,7 +115,7 @@
     </div>
 </div>
 
-<!-- ২. মূল অ্যাপ্লিকেশন কন্টেইনার (লগইন এর পর সক্রিয় হবে) -->
+<!-- মূল অ্যাপ্লিকেশন কন্টেইনার -->
 <div class="app-container" id="appContainer">
     <header>
         <div>
@@ -125,7 +128,7 @@
         </div>
     </header>
 
-    <!-- ৩. ড্যাশবোর্ড বাটন মেনু (ক্লিক করলে সেই বিষয় সামনে আসবে) -->
+    <!-- ড্যাশবোর্ড বাটন মেনু -->
     <div class="dashboard-menu">
         <div class="dash-btn active" id="btnDashInput" onclick="switchSection('inputSection', 'btnDashInput')">📝 নতুন জনশক্তি ইনপুট ফর্ম</div>
         <div class="dash-btn" id="btnDashSearch" onclick="switchSection('searchSection', 'btnDashSearch')">🔍 অনুসন্ধান ও মাস্টার রিপোর্ট</div>
@@ -157,9 +160,8 @@
                         <option value="">বাছাই করুন</option>
                         <option value="রুকন">রুকন</option>
                         <option value="কর্মী">কর্মী</option>
-                        <option value="সহযোগী">সহযোগী</option>
+                        <option value="सहયોગী">সহযোগী</option>
                         <option value="সুধী">সুধী</option>
-                        <option value="অন্যান্য">অন্যান্য</option>
                     </select>
                 </div>
                 <div class="form-group"><label>পেশা</label><input type="text" id="profession"></div>
@@ -171,15 +173,14 @@
                 <div class="form-group"><label>স্থায়ী ঠিকানা</label><textarea id="permanentAddress" rows="2"></textarea></div>
                 <div class="form-group"><label>মন্তব্য ও অন্যান্য তথ্য</label><textarea id="remarks" rows="2"></textarea></div>
             </div>
-            <button type="submit" class="btn btn-success">💾 ডাটাবেজে সংরক্ষণ করুন</button>
+            <button type="submit" class="btn btn-success">💾 ক্লাউড ডাটাবেজে সংরক্ষণ করুন</button>
         </form>
     </div>
 
-    <!-- সেকশন ২: অনুসন্ধান ও রিপোর্ট তৈরি (শর্তাধীন অপশনসমূহ) -->
+    <!-- সেকশন ২: অনুসন্ধান ও রিপোর্ট তৈরি -->
     <div class="content-section" id="searchSection">
         <h3 style="margin-bottom:15px; color:var(--secondary);">🔍 ফিল্টারড অনুসন্ধান প্যানেল</h3>
         <div class="grid-3" style="background:#f8fafc; padding:20px; border-radius:8px; border:1px solid #e2e8f0;">
-            <!-- এই অপশনগুলোর কম্বিনেশনেই তালিকা তৈরি হবে -->
             <div class="form-group">
                 <label>নাম বা মোবাইল দিয়ে খুঁজুন</label>
                 <input type="text" id="searchQuery" oninput="executeSearch()" placeholder="টাইপ করুন...">
@@ -214,97 +215,101 @@
                         <th>ছবি</th><th>নাম</th><th>মোবাইল নম্বর</th><th>পদবী</th><th>রক্তের গ্রুপ</th><th>পেশা</th><th>অ্যাকশন</th>
                     </tr>
                 </thead>
-                <tbody id="liveTableBody">
-                    <!-- সার্চ রেজাল্ট ডাইনামিক্যালি আসবে -->
-                </tbody>
+                <tbody id="liveTableBody"></tbody>
             </table>
         </div>
     </div>
 
-    <!-- সেকশন ৩: কাস্টম মেসেজ ও হোয়াটসঅ্যাপ সেটিং -->
+    <!-- সেকশন ৩: সেটিংস -->
     <div class="content-section" id="settingsSection">
         <h3 style="margin-bottom:20px; color:var(--primary);">⚙️ হোয়াটসঅ্যাপ ও জন্মদিনের শুভেচ্ছা মেসেজ কনফিগারেশন</h3>
         <div class="grid-3" style="grid-template-columns: 1fr;">
             <div class="form-group">
-                <label>হোয়াটসঅ্যাপ মেসেজ প্রেরকের সোর্স অপশন/ডিভাইস গেটওয়ে লিংক (যেখান থেকে মেসেজ যাবে)</label>
-                <input type="text" id="whatsappGateway" placeholder="যেমন: https://api.whatsapp.com/send বা আপনার কাস্টম API গেটওয়ে লিংক">
+                <label>হোয়াটসঅ্যাপ মেসেজ প্রেরকের সোর্স অপশন</label>
+                <input type="text" id="whatsappGateway" placeholder="যেমন: https://api.whatsapp.com/send">
             </div>
             <div class="form-group">
-                <label>জন্মদিনের শুভেচ্ছা কাস্টম মেসেজ লিখুন (সিস্টেম টেমপ্লেট)</label>
+                <label>জন্মদিনের শুভেচ্ছা কাস্টম মেসেজ লিখুন</label>
                 <textarea id="globalSmsTemplate" rows="3">আসসালামু আলাইকুম, [Name] ভাই। পবিত্র জন্মদিনে আপনাকে পেশাজীবী ওয়ার্ডের পক্ষ থেকে আন্তরিক মোবারকবাদ ও শুভেচ্ছা।</textarea>
-                <small style="color:#666; margin-top:5px;">* [Name] লিখলে সফটওয়্যার স্বয়ংক্রিয়ভাবে সংশ্লিষ্ট ব্যক্তির নাম বসিয়ে দেবে।</small>
             </div>
         </div>
         <button class="btn btn-success" onclick="saveSettings()">কনফিগারেশন আপডেট করুন</button>
     </div>
 </div>
 
-<!-- ৪. পপআপ: জীবন বৃত্তান্ত (শর্ত অনুযায়ী একদম ক্লিন ফরম্যাট) -->
+<!-- পপআপ: জীবন বৃত্তান্ত -->
 <div id="biodataPopup" class="popup-overlay">
     <div class="popup-paper">
         <button class="close-btn" onclick="closePopup('biodataPopup')">বন্ধ করুন</button>
-        
-        <!-- শর্ত: ওপরে শুধুমাত্র "জীবন বৃত্তান্ত" লেখা থাকবে আর কিছু না -->
         <div class="bio-title-only">জীবন বৃত্তান্ত</div>
-
         <div class="bio-pic" id="bioViewPhoto"></div>
-        
-        <div style="margin-top:10px;" id="bioDetailsContainer">
-            <!-- জাভাস্ক্রিপ্ট ডেটা প্রিন্ট করবে -->
-        </div>
-
+        <div style="margin-top:10px;" id="bioDetailsContainer"></div>
         <div style="text-align: center; margin-top: 40px;" class="no-print">
             <button class="btn btn-success" onclick="window.print()">🖨️ এই জীবন বৃত্তান্ত প্রিন্ট করুন</button>
         </div>
     </div>
 </div>
 
-<!-- ৫. পপআপ: কাস্টম মাস্টার লিস্ট প্রিন্ট উইন্ডো -->
+<!-- পপআপ: কাস্টম মাস্টার লিস্ট -->
 <div id="masterListPopup" class="popup-overlay">
     <div class="popup-paper" style="max-width: 1050px;">
         <button class="close-btn" onclick="closePopup('masterListPopup')">বন্ধ করুন</button>
-        
-        <!-- শর্তানুযায়ী নির্ধারিত শিরোনাম এবং ডাইনামিক পদবী শিরোনাম -->
         <div style="text-align:center; margin-bottom:25px;">
-            <h2 style="font-size:22px; color:black;">বাংলাদেশ জামাতে ইসলামী পেশাজীবী ওয়ার্ড ঝিনাইদহ শহর শাখা</h2>
+            <h2>বাংলাদেশ জামাতে ইসলামী পেশাজীবী ওয়ার্ড ঝিনাইদহ শহর শাখা</h2>
             <h4 id="dynamicListTitle" style="font-size:16px; margin-top:5px; color:#333;"></h4>
         </div>
-
         <table class="print-list-table">
             <thead>
                 <tr>
                     <th>ক্র.মিং</th><th>ছবি</th><th>নাম ও পিতার নাম</th><th>মোবাইল নম্বর</th><th>পদবী</th><th>রক্তের গ্রুপ</th><th>পেশা ও ঠিকানা</th>
                 </tr>
             </thead>
-            <tbody id="masterListTableBody">
-                <!-- ফিল্টার করা তালিকা আসবে -->
-            </tbody>
+            <tbody id="masterListTableBody"></tbody>
         </table>
-
         <div style="text-align: center; margin-top: 40px;" class="no-print">
             <button class="btn btn-secondary" onclick="window.print()">🖨️ ফাইনাল প্রিন্ট / পিডিএফ সেভ</button>
         </div>
     </div>
 </div>
 
-
 <script>
-    // ডামি ডেটাবেজ ব্যাকআপ (ইন্টারনেটে লাইভ করার সময় Firebase Firestore দিয়ে রিপ্লেস হবে)
-    let memberDatabase = JSON.parse(localStorage.getItem('cloud_db_v4')) || [];
+    // আপনার ফায়ারবেস অ্যাকাউন্ট থেকে নেওয়া কনফিগারেশন কোড
+    const firebaseConfig = {
+        apiKey: "AIzaSyAqIxJkUbPQ3FpM3hYgH6HwN7P9K9L", 
+        authDomain: "dawa-c4022.firebaseapp.com",
+        projectId: "dawa-c4022",
+        storageBucket: "dawa-c4022.appspot.com",
+        messagingSenderId: "85951368171",
+        appId: "1:85951368171:web:9c6c398322e7de18df26b4"
+    };
+    
+    // ফায়ারবেস ইনিশিয়ালাইজেশন
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let memberDatabase = [];
     let currentRole = ""; 
     let currentFilteredList = [];
 
-    // পাসওয়ার্ড কনফিগারেশন (সুপার এডমিন ও জেনারেল এডমিন)
-    const PASSWORDS = {
-        super: "super123",     // সুপার এডমিন পাসওয়ার্ড (পরিবর্তনযোগ্য)
-        general: "general123"  // সাধারণ এডমিন পাসওয়ার্ড (পরিবর্তনযোগ্য)
-    };
-
-    // হোয়াটসঅ্যাপ ডিফল্ট গেটওয়ে
+    const PASSWORDS = { super: "super123", general: "general123" };
     let waGateway = localStorage.getItem('wa_gateway') || "https://api.whatsapp.com/send";
-    document.getElementById('whatsappGateway').value = waGateway;
+    window.onload = function() {
+        document.getElementById('whatsappGateway').value = waGateway;
+    }
 
-    // ১. লগইন প্রসেস
+    // ক্লাউড থেকে রিয়েল-টাইম ডেটা লোড
+    function fetchCloudData() {
+        db.collection("members").orderBy("id", "desc").onSnapshot((snapshot) => {
+            memberDatabase = [];
+            snapshot.forEach((doc) => {
+                memberDatabase.push(doc.data());
+            });
+            executeSearch();
+        }, (error) => {
+            console.error("Firebase read error: ", error);
+        });
+    }
+
     function handleLogin() {
         const role = document.getElementById('loginRole').value;
         const pass = document.getElementById('loginPassword').value;
@@ -314,10 +319,9 @@
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('appContainer').style.display = 'block';
             document.getElementById('userBadge').innerText = role === 'super' ? '👑 সুপার এডমিন' : '📝 সাধারণ এডমিন';
-            
-            executeSearch(); // প্রাথমিক ডেটা লোড
+            fetchCloudData(); 
         } else {
-            alert('ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।');
+            alert('ভুল পাসওয়ার্ড!');
         }
     }
 
@@ -327,32 +331,29 @@
         document.getElementById('loginPassword').value = '';
     }
 
-    // ২. ড্যাশবোর্ড বাটন নেভিগেশন কন্ট্রোল
     function switchSection(sectionId, btnId) {
         document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
         document.querySelectorAll('.dash-btn').forEach(btn => btn.classList.remove('active'));
-        
         document.getElementById(sectionId).classList.add('active');
         document.getElementById(btnId).classList.add('active');
     }
 
-    // ৩. নতুন জনশক্তি ডেটা ইনপুত ও ইমেজ প্রসেসিং
     document.getElementById('memberForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const photoFile = document.getElementById('photoInput').files[0];
-
         if (photoFile) {
             const reader = new FileReader();
-            reader.onloadend = function() { saveMemberToCloud(reader.result); }
+            reader.onloadend = function() { saveToFirestore(reader.result); }
             reader.readAsDataURL(photoFile);
         } else {
-            saveMemberToCloud('');
+            saveToFirestore('');
         }
     });
 
-    function saveMemberToCloud(base64Photo) {
+    function saveToFirestore(base64Photo) {
+        const uid = Date.now().toString();
         const newMember = {
-            id: Date.now(),
+            id: uid,
             name: document.getElementById('name').value,
             fatherName: document.getElementById('fatherName').value,
             mobile: document.getElementById('mobile').value,
@@ -367,29 +368,25 @@
             photo: base64Photo
         };
 
-        memberDatabase.push(newMember);
-        localStorage.setItem('cloud_db_v4', JSON.stringify(memberDatabase));
-        
-        alert('সফলভাবে ক্লাউড ডাটাবেজে সংরক্ষিত হয়েছে!');
-        document.getElementById('memberForm').reset();
-        executeSearch();
-        switchSection('searchSection', 'btnDashSearch'); // ইনপুট শেষে স্বয়ংক্রিয়ভাবে সার্চ লিস্টে নিয়ে যাবে
+        db.collection("members").doc(uid).set(newMember)
+        .then(() => {
+            alert('সফলভাবে গ্লোবাল ক্লাউড ডাটাবেজে সংরক্ষিত হয়েছে!');
+            document.getElementById('memberForm').reset();
+            switchSection('searchSection', 'btnDashSearch');
+        }).catch((error) => alert("Error saving data: " + error));
     }
 
-    // ৪. কন্ডিশনাল সার্চ মেকানিজম (যে কয়টি অপশন সিলেক্ট করা হবে সেই অনুযায়ী তালিকা)
     function executeSearch() {
         const query = document.getElementById('searchQuery').value.toLowerCase();
         const designation = document.getElementById('searchDesignation').value;
         const blood = document.getElementById('searchBlood').value;
 
         currentFilteredList = memberDatabase.filter(member => {
-            const matchesQuery = member.name.toLowerCase().includes(query) || member.mobile.includes(query);
+            const matchesQuery = (member.name && member.name.toLowerCase().includes(query)) || (member.mobile && member.mobile.includes(query));
             const matchesDesignation = designation === "" || member.politicalStatus === designation;
             const matchesBlood = blood === "" || member.bloodGroup === blood;
-
             return matchesQuery && matchesDesignation && matchesBlood;
         });
-
         renderLiveTable();
     }
 
@@ -400,14 +397,10 @@
         currentFilteredList.forEach(member => {
             const tr = document.createElement('tr');
             const imgHtml = member.photo ? `<img src="${member.photo}" style="width:40px;height:45px;object-fit:cover;border-radius:4px;">` : 'কোনো ছবি নেই';
-            
-            // হোয়াটসঅ্যাপ লিংক প্রসেসিং
             const rawMsg = document.getElementById('globalSmsTemplate').value;
             const customMsg = encodeURIComponent(rawMsg.replace('[Name]', member.name));
             const waLink = `${waGateway}?phone=${member.mobile}&text=${customMsg}`;
-
-            // সুপার এডমিন ছাড়া সাধারণ এডমিন ডিলিট বাটন দেখতে পাবে না (নিরাপত্তা শর্ত)
-            const deleteBtnHtml = currentRole === 'super' ? `<button class="btn btn-danger" style="padding:4px 8px; font-size:12px;" onclick="deleteMember(${member.id})">মুছুন</button>` : '';
+            const deleteBtnHtml = currentRole === 'super' ? `<button class="btn btn-danger" style="padding:4px 8px; font-size:12px;" onclick="deleteMember('${member.id}')">মুছুন</button>` : '';
 
             tr.innerHTML = `
                 <td>${imgHtml}</td>
@@ -417,7 +410,7 @@
                 <td><span style="color:red;font-weight:bold;">${member.bloodGroup || '-'}</span></td>
                 <td>${member.profession || '-'}</td>
                 <td>
-                    <button class="btn btn-success" style="padding:4px 8px; font-size:12px;" onclick="viewCleanBiodata(${member.id})">🔍 জীবন বৃত্তান্ত</button>
+                    <button class="btn btn-success" style="padding:4px 8px; font-size:12px;" onclick="viewCleanBiodata('${member.id}')">🔍 জীবন বৃত্তান্ত</button>
                     <a href="${waLink}" target="_blank" style="text-decoration:none;"><button class="btn" style="background:#25D366; color:white; padding:4px 8px; font-size:12px;">💬 হোয়াটসঅ্যাপ</button></a>
                     ${deleteBtnHtml}
                 </td>
@@ -426,78 +419,53 @@
         });
     }
 
-    // ৫. ক্লিন জীবন বৃত্তান্ত জেনারেটর (শর্তাধীন নিট অ্যান্ড ক্লিন ভিউ)
     function viewCleanBiodata(id) {
         const m = memberDatabase.find(item => item.id === id);
         if(!m) return;
-
-        const photoDiv = document.getElementById('bioViewPhoto');
-        photoDiv.innerHTML = m.photo ? `<img src="${m.photo}">` : '<span>ছবি নেই</span>';
-
-        // শর্ত অনুযায়ী এখানে নিচে কোনো মেসেজ বা অতিরিক্ত লেখা থাকবে না
+        document.getElementById('bioViewPhoto').innerHTML = m.photo ? `<img src="${m.photo}">` : '<span>ছবি নেই</span>';
         document.getElementById('bioDetailsContainer').innerHTML = `
             <div class="bio-field"><div class="bio-label">নাম:</div><div class="bio-val">${m.name}</div></div>
-            <div class="bio-field"><div class="bio-label">পিতার নাম:</div><div class="bio-val">${m.fatherName || 'উল্লেখ নেই'}</div></div>
+            <div class="bio-field"><div class="bio-label">পিতার নাম:</div><div class="bio-val">${m.fatherName || '-'}</div></div>
             <div class="bio-field"><div class="bio-label">মোবাইল নম্বর:</div><div class="bio-val">${m.mobile}</div></div>
-            <div class="bio-field"><div class="bio-label">জন্ম তারিখ:</div><div class="bio-val">${m.dob || 'উল্লেখ নেই'}</div></div>
-            <div class="bio-field"><div class="bio-label">রক্তের গ্রুপ:</div><div class="bio-val">${m.bloodGroup || ' can\'t find'}</div></div>
+            <div class="bio-field"><div class="bio-label">জন্ম তারিখ:</div><div class="bio-val">${m.dob || '-'}</div></div>
+            <div class="bio-field"><div class="bio-label">রক্তের গ্রুপ:</div><div class="bio-val">${m.bloodGroup || '-'}</div></div>
             <div class="bio-field"><div class="bio-label">সাংগঠনিক পদবী:</div><div class="bio-val">${m.politicalStatus}</div></div>
-            <div class="bio-field"><div class="bio-label">পেশা:</div><div class="bio-val">${m.profession || 'উল্লেখ নেই'}</div></div>
-            <div class="bio-field"><div class="bio-label">শিক্ষাগত যোগ্যতা:</div><div class="bio-val">${m.education || 'উল্লেখ নেই'}</div></div>
-            <div class="bio-field"><div class="bio-label">বর্তমান ঠিকানা:</div><div class="bio-val">${m.currentAddress || 'উল্লেখ নেই'}</div></div>
-            <div class="bio-field"><div class="bio-label">স্থায়ী ঠিকানা:</div><div class="bio-val">${m.permanentAddress || 'উল্লেখ নেই'}</div></div>
-            <div class="bio-field"><div class="bio-label">বিশেষ মন্তব্য:</div><div class="bio-val">${m.remarks || 'নেই'}</div></div>
+            <div class="bio-field"><div class="bio-label">পেশা:</div><div class="bio-val">${m.profession || '-'}</div></div>
+            <div class="bio-field"><div class="bio-label">ঠিকানা:</div><div class="bio-val">${m.currentAddress || '-'}</div></div>
         `;
-
         document.getElementById('biodataPopup').style.display = 'block';
     }
 
-    // ৬. কাস্টম মাস্টার প্রিন্ট লিস্ট জেনারেটর (শর্তাধীন ডাইনামিক শিরোনাম সহ)
     function printMasterList() {
         const selectedDesig = document.getElementById('searchDesignation').value;
-        const titleH4 = document.getElementById('dynamicListTitle');
-        
-        // শর্ত: লিস্টে যে পদবী দিয়ে সার্চ দেওয়া হবে সেই পদবীর শিরোনাম স্বয়ংক্রিয়ভাবে আসবে
-        if(selectedDesig) {
-            titleH4.innerText = `তালিকা বিবরণ - পদবী: ${selectedDesig}`;
-        } else {
-            titleH4.innerText = `মাস্টার জনশক্তি তালিকা (সম্মিলিত)`;
-        }
-
+        document.getElementById('dynamicListTitle').innerText = selectedDesig ? `তালিকা বিবরণ - পদবী: ${selectedDesig}` : `মাস্টার জনশক্তি তালিকা (সম্মিলিত)`;
         const listTbody = document.getElementById('masterListTableBody');
         listTbody.innerHTML = '';
 
         currentFilteredList.forEach((m, index) => {
             const tr = document.createElement('tr');
-            const imgHtml = m.photo ? `<img src="${m.photo}" style="width:45px;height:50px;object-fit:cover;">` : 'ছবি নেই';
-            
             tr.innerHTML = `
                 <td style="text-align:center;">${index + 1}</td>
-                <td style="text-align:center;">${imgHtml}</td>
+                <td style="text-align:center;">${m.photo ? `<img src="${m.photo}" style="width:45px;height:50px;object-fit:cover;">` : 'ছবি নেই'}</td>
                 <td><b>${m.name}</b><br><small>পিতা: ${m.fatherName || '-'}</small></td>
-                <td>${m.mobile}</td>
-                <td>${m.politicalStatus}</td>
-                <td style="text-align:center;font-weight:bold;">${m.bloodGroup || '-'}</td>
-                <td><small><b>পেশা:</b> ${m.profession || '-'}<br><b>ঠিকানা:</b> ${m.currentAddress || '-'}</small></td>
+                <td>${m.mobile}</td><td>${m.politicalStatus}</td><td>${m.bloodGroup || '-'}</td>
+                <td><small>${m.currentAddress || '-'}</small></td>
             `;
             listTbody.appendChild(tr);
         });
-
         document.getElementById('masterListPopup').style.display = 'block';
+    }
+
+    function deleteMember(id) {
+        if(confirm('রেকর্ডটি ক্লাউড ডাটাবেজ থেকে চিরতরে মুছে ফেলতে চান?')) {
+            db.collection("members").doc(id).delete().then(() => alert('মুছে ফেলা হয়েছে!'));
+        }
     }
 
     function saveSettings() {
         waGateway = document.getElementById('whatsappGateway').value;
         localStorage.setItem('wa_gateway', waGateway);
-        alert('সেটিংস সফলভাবে আপডেট হয়েছে!');
-    }
-
-    function deleteMember(id) {
-        if(confirm('আপনি কি নিশ্চিতভাবে এই কর্মীর রেকর্ড ডাটাবেজ থেকে মুছে ফেলতে চান?')) {
-            memberDatabase = memberDatabase.filter(m => m.id !== id);
-            localStorage.setItem('cloud_db_v4', JSON.stringify(memberDatabase));
-            executeSearch();
-        }
+        alert('আপডেট হয়েছে!');
     }
 
     function closePopup(id) { document.getElementById(id).style.display = 'none'; }
