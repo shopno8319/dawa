@@ -429,7 +429,33 @@
         waGateway = document.getElementById('whatsappGateway').value;
         localStorage.setItem('wa_gateway', waGateway);
         alert('আপডেট হয়েছে!');
-    }
+    }// এই কোডটুকু স্ক্রিনশটের saveSettings আর closePopup ফাংশনের মাঝখানে বসিয়ে দিন
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAqIxJkUbPQ3FpM3hYgH6HwN7P9K9L",
+        authDomain: "dawa-c4022.firebaseapp.com",
+        projectId: "dawa-c4022",
+        storageBucket: "dawa-c4022.appspot.com",
+        messagingSenderId: "85951368171",
+        appId: "1:85951368171:web:9c6c398322e7de18df26b4"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+// এই কোডটুকু স্ক্রিনশটের saveSettings আর closePopup ফাংশনের মাঝখানে বসিয়ে দিন
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAqIxJkUbPQ3FpM3hYgH6HwN7P9K9L",
+        authDomain: "dawa-c4022.firebaseapp.com",
+        projectId: "dawa-c4022",
+        storageBucket: "dawa-c4022.appspot.com",
+        messagingSenderId: "85951368171",
+        appId: "1:85951368171:web:9c6c398322e7de18df26b4"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     function closePopup(id) { document.getElementById(id).style.display = 'none'; }
 </script>
 </body>
