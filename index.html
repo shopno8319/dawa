@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>জনশক্তি ব্যবস্থাপনা ও ডাটাবেজ সফটওয়্যার (V4 - ক্লাউড ব্যাকএন্ড)</title>
-    <!-- Firebase SDK (অনলাইন ক্লাউড ডাটাবেজ কানেক্টর) -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     
@@ -17,74 +17,57 @@
             --gray-bg: #f3f4f6;
             --text-main: #1f2937;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
         body { background-color: var(--gray-bg); color: var(--text-main); }
-
-        /* Login Screen */
-        .login-screen {
-            display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #047857, #1e3a8a);
-        }
+        .login-screen { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: linear-gradient(135deg, #047857, #1e3a8a); }
         .login-card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center; }
         .login-card h2 { color: var(--primary); margin-bottom: 20px; }
         .login-field { display: flex; flex-direction: column; text-align: left; margin-bottom: 15px; }
         .login-field label { font-weight: 600; margin-bottom: 5px; color: #4b5563; }
         .login-field input, .login-field select { padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; font-size: 15px; }
-
-        /* Main App Layout */
         .app-container { display: none; padding: 20px; max-width: 1300px; margin: 0 auto; }
         header { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .user-badge { background: #e0f2fe; color: #0369a1; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 14px; }
-
-        /* Navigation Dashboard Buttons */
         .dashboard-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .dash-btn { background: white; border: 2px solid #e5e7eb; padding: 20px; border-radius: 10px; cursor: pointer; text-align: center; transition: all 0.2s; font-size: 16px; font-weight: bold; color: var(--secondary); }
         .dash-btn:hover { border-color: var(--primary); background: #f0fdf4; transform: translateY(-2px); }
         .dash-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-
-        /* Content Sections */
         .content-section { display: none; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 25px; }
         .content-section.active { display: block; }
-
-        /* Forms & Inputs */
         .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 20px; }
         .form-group { display: flex; flex-direction: column; }
         .form-group label { font-weight: 600; margin-bottom: 8px; color: #374151; }
         input, select, textarea { padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.1); }
-
-        /* UI Buttons */
         .btn { padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: all 0.2s; font-size: 14px; }
         .btn-success { background: var(--primary); color: white; }
         .btn-success:hover { background: var(--primary-dark); }
         .btn-danger { background: var(--danger); color: white; }
         .btn-secondary { background: #4b5563; color: white; }
-
-        /* Tables */
         .table-responsive { overflow-x: auto; margin-top: 15px; }
         table { width: 100%; border-collapse: collapse; background: white; }
         th, td { border: 1px solid #e2e8f0; padding: 12px; text-align: left; font-size: 14px; }
         th { background-color: #f1f5f9; color: #334155; }
         tr:nth-child(even) { background-color: #f8fafc; }
-
-        /* Popups Overlays */
         .popup-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; overflow-y: auto; padding: 20px; }
         .popup-paper { background: white; max-width: 850px; margin: 30px auto; padding: 40px; border-radius: 6px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .close-btn { position: absolute; top: 15px; right: 15px; background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; }
-
-        /* Clean Biodata Layout */
-        .bio-title-only { text-align: center; font-size: 26px; font-weight: bold; margin-bottom: 30px; letter-spacing: 2px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+        
+        /* Clean Biodata Header Modification */
+        .bio-header-area { text-align: center; margin-bottom: 25px; border-bottom: 2px solid #000; padding-bottom: 15px; }
+        .bio-org-title { font-size: 24px; font-weight: bold; color: #000; margin-bottom: 2px; }
+        .bio-sub-title { font-size: 18px; font-weight: 500; color: #333; margin-bottom: 8px; }
+        .bio-doc-type { display: inline-block; background: #000; color: white; padding: 3px 15px; font-weight: bold; font-size: 15px; border-radius: 3px; }
+        
         .bio-field { display: flex; border-bottom: 1px dashed #ccc; padding: 10px 0; font-size: 16px; }
         .bio-label { width: 30%; font-weight: bold; color: #333; }
         .bio-val { width: 70%; color: #000; }
         .bio-pic { float: right; width: 120px; height: 140px; border: 1px solid #999; display: flex; align-items: center; justify-content: center; background: #fafafa; margin-left: 15px; }
         .bio-pic img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* Clean List Layout */
+        
         .print-list-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .print-list-table th, .print-list-table td { border: 1px solid #000; padding: 8px; font-size: 13px; color: black; }
         .print-list-table th { background: #f2f2f2 !important; }
-
         @media print {
             body * { visibility: hidden; }
             .popup-overlay, .popup-overlay * { visibility: visible; }
@@ -96,7 +79,6 @@
 </head>
 <body>
 
-<!-- লগইন স্ক্রিন -->
 <div class="login-screen" id="loginScreen">
     <div class="login-card">
         <h2>ডাটাবেজ লগইন প্যানেল</h2>
@@ -115,7 +97,6 @@
     </div>
 </div>
 
-<!-- মূল অ্যাপ্লিকেশন কন্টেইনার -->
 <div class="app-container" id="appContainer">
     <header>
         <div>
@@ -128,14 +109,12 @@
         </div>
     </header>
 
-    <!-- ড্যাশবোর্ড বাটন মেনু -->
     <div class="dashboard-menu">
         <div class="dash-btn active" id="btnDashInput" onclick="switchSection('inputSection', 'btnDashInput')">📝 নতুন জনশক্তি ইনপুট ফর্ম</div>
         <div class="dash-btn" id="btnDashSearch" onclick="switchSection('searchSection', 'btnDashSearch')">🔍 অনুসন্ধান ও মাস্টার রিপোর্ট</div>
-        <div class="dash-btn" id="btnDashSettings" onclick="switchSection('settingsSection', 'btnDashSettings')">⚙️ কাস্টম মেসেজ ও হোয়াটসঅ্যাপ সেটিং</div>
+        <div class="dash-btn" id="btnDashSettings" onclick="switchSection('settingsSection', 'btnDashSettings')">⚙️ কাস্টম মেসেজ সেটিং</div>
     </div>
 
-    <!-- সেকশন ১: ইনপুট ফর্ম -->
     <div class="content-section active" id="inputSection">
         <h3 style="margin-bottom:20px; color:var(--primary);">নতুন তথ্য সংযোজন</h3>
         <form id="memberForm">
@@ -143,7 +122,7 @@
                 <div class="form-group"><label>নাম *</label><input type="text" id="name" required></div>
                 <div class="form-group"><label>পিতার নাম</label><input type="text" id="fatherName"></div>
                 <div class="form-group"><label>মোবাইল নম্বর *</label><input type="tel" id="mobile" required></div>
-                <div class="form-group"><label>জন্ম তারিখ *</label><input type="date" id="dob"></div>
+                <div class="form-group"><label>জন্ম তারিখ</label><input type="date" id="dob"></div>
                 <div class="form-group">
                     <label>রক্তের গ্রুপ</label>
                     <select id="bloodGroup">
@@ -160,12 +139,12 @@
                         <option value="">বাছাই করুন</option>
                         <option value="রুকন">রুকন</option>
                         <option value="কর্মী">কর্মী</option>
-                        <option value="सहયોગী">সহযোগী</option>
+                        <option value="সহযোগী">সহযোগী</option>
                         <option value="সুধী">সুধী</option>
                     </select>
                 </div>
                 <div class="form-group"><label>পেশা</label><input type="text" id="profession"></div>
-                <div class="form-group"><label>শিক্ষাগত যোগ্যতা</label><input type="text" id="education"></div>
+                <div class="form-group"><label>शिक्षাগত যোগ্যতা</label><input type="text" id="education"></div>
                 <div class="form-group"><label>ছবি আপলোড</label><input type="file" id="photoInput" accept="image/*"></div>
             </div>
             <div class="grid-3" style="grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));">
@@ -177,7 +156,6 @@
         </form>
     </div>
 
-    <!-- সেকশন ২: অনুসন্ধান ও রিপোর্ট তৈরি -->
     <div class="content-section" id="searchSection">
         <h3 style="margin-bottom:15px; color:var(--secondary);">🔍 ফিল্টারড অনুসন্ধান প্যানেল</h3>
         <div class="grid-3" style="background:#f8fafc; padding:20px; border-radius:8px; border:1px solid #e2e8f0;">
@@ -203,33 +181,28 @@
                 </select>
             </div>
         </div>
-
-        <div style="margin-top: 15px; display: flex; gap: 10px;">
+        <div style="margin-top: 15px;">
             <button class="btn btn-secondary" onclick="printMasterList()">🖨️ ফিল্টারকৃত তালিকা প্রিন্ট করুন (List View)</button>
         </div>
-
         <div class="table-responsive">
             <table>
                 <thead>
-                    <tr>
-                        <th>ছবি</th><th>নাম</th><th>মোবাইল নম্বর</th><th>পদবী</th><th>রক্তের গ্রুপ</th><th>পেশা</th><th>অ্যাকশন</th>
-                    </tr>
+                    <tr><th>ছবি</th><th>নাম</th><th>মোবাইল নম্বর</th><th>পদবী</th><th>রক্তের গ্রুপ</th><th>পেশা</th><th>অ্যাকশন</th></tr>
                 </thead>
                 <tbody id="liveTableBody"></tbody>
             </table>
         </div>
     </div>
 
-    <!-- সেকশন ৩: সেটিংস -->
     <div class="content-section" id="settingsSection">
-        <h3 style="margin-bottom:20px; color:var(--primary);">⚙️ হোয়াটসঅ্যাপ ও জন্মদিনের শুভেচ্ছা মেসেজ কনফিগারেশন</h3>
+        <h3 style="margin-bottom:20px; color:var(--primary);">⚙️ হোয়াটসঅ্যাপ ও শুভেচ্ছা মেসেজ কনফিগারেশন</h3>
         <div class="grid-3" style="grid-template-columns: 1fr;">
             <div class="form-group">
-                <label>হোয়াটসঅ্যাপ মেসেজ প্রেরকের সোর্স অপশন</label>
-                <input type="text" id="whatsappGateway" placeholder="যেমন: https://api.whatsapp.com/send">
+                <label>হোয়াটসঅ্যাপ গেটওয়ে ইউআরএল</label>
+                <input type="text" id="whatsappGateway" value="https://api.whatsapp.com/send">
             </div>
             <div class="form-group">
-                <label>জন্মদিনের শুভেচ্ছা কাস্টম মেসেজ লিখুন</label>
+                <label>জন্মদিনের শুভেচ্ছা কাস্টম মেসেজ</label>
                 <textarea id="globalSmsTemplate" rows="3">আসসালামু আলাইকুম, [Name] ভাই। পবিত্র জন্মদিনে আপনাকে পেশাজীবী ওয়ার্ডের পক্ষ থেকে আন্তরিক মোবারকবাদ ও শুভেচ্ছা।</textarea>
             </div>
         </div>
@@ -237,11 +210,15 @@
     </div>
 </div>
 
-<!-- পপআপ: জীবন বৃত্তান্ত -->
+<!-- বায়োডাটা পপআপ -->
 <div id="biodataPopup" class="popup-overlay">
     <div class="popup-paper">
         <button class="close-btn" onclick="closePopup('biodataPopup')">বন্ধ করুন</button>
-        <div class="bio-title-only">জীবন বৃত্তান্ত</div>
+        <div class="bio-header-area">
+            <div class="bio-org-title">বাংলাদেশ জামায়াতে ইসলামী</div>
+            <div class="bio-sub-title">পেশাজীবী ওয়ার্ড, ঝিনাইদহ শহর শাখা</div>
+            <div class="bio-doc-type">জীবন বৃত্তান্ত</div>
+        </div>
         <div class="bio-pic" id="bioViewPhoto"></div>
         <div style="margin-top:10px;" id="bioDetailsContainer"></div>
         <div style="text-align: center; margin-top: 40px;" class="no-print">
@@ -250,19 +227,18 @@
     </div>
 </div>
 
-<!-- পপআপ: কাস্টম মাস্টার লিস্ট -->
+<!-- মাস্টার লিস্ট পপআপ -->
 <div id="masterListPopup" class="popup-overlay">
     <div class="popup-paper" style="max-width: 1050px;">
         <button class="close-btn" onclick="closePopup('masterListPopup')">বন্ধ করুন</button>
         <div style="text-align:center; margin-bottom:25px;">
-            <h2>বাংলাদেশ জামাতে ইসলামী পেশাজীবী ওয়ার্ড ঝিনাইদহ শহর শাখা</h2>
-            <h4 id="dynamicListTitle" style="font-size:16px; margin-top:5px; color:#333;"></h4>
+            <h1 style="font-size: 26px; font-weight: bold; color: #000; margin-bottom: 3px;">বাংলাদেশ জামায়াতে ইসলামী</h1>
+            <h3 style="font-size: 18px; font-weight: bold; color: #333; margin-bottom: 8px;">পেশাজীবী ওয়ার্ড, ঝিনাইদহ শহর শাখা</h3>
+            <h4 id="dynamicListTitle" style="font-size:15px; color:#555; font-weight: normal;"></h4>
         </div>
         <table class="print-list-table">
             <thead>
-                <tr>
-                    <th>ক্র.মিং</th><th>ছবি</th><th>নাম ও পিতার নাম</th><th>মোবাইল নম্বর</th><th>পদবী</th><th>রক্তের গ্রুপ</th><th>পেশা ও ঠিকানা</th>
-                </tr>
+                <tr><th>ক্র.মিং</th><th>ছবি</th><th>নাম ও পিতার নাম</th><th>মোবাইল নম্বর</th><th>পদবী</th><th>রক্তের গ্রুপ</th><th>পেশা ও ঠিকানা</th></tr>
             </thead>
             <tbody id="masterListTableBody"></tbody>
         </table>
@@ -273,9 +249,8 @@
 </div>
 
 <script>
-    // আপনার ফায়ারবেস অ্যাকাউন্ট থেকে নেওয়া কনফিগারেশন কোড
     const firebaseConfig = {
-        apiKey: "AIzaSyAqIxJkUbPQ3FpM3hYgH6HwN7P9K9L", 
+        apiKey: "AIzaSyAqIxJkUbPQ3FpM3hYgH6HwN7P9K9L",
         authDomain: "dawa-c4022.firebaseapp.com",
         projectId: "dawa-c4022",
         storageBucket: "dawa-c4022.appspot.com",
@@ -283,37 +258,26 @@
         appId: "1:85951368171:web:9c6c398322e7de18df26b4"
     };
     
-    // ফায়ারবেস ইনিশিয়ালাইজেশন
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
     let memberDatabase = [];
     let currentRole = ""; 
     let currentFilteredList = [];
-
     const PASSWORDS = { super: "super123", general: "general123" };
     let waGateway = localStorage.getItem('wa_gateway') || "https://api.whatsapp.com/send";
-    window.onload = function() {
-        document.getElementById('whatsappGateway').value = waGateway;
-    }
 
-    // ক্লাউড থেকে রিয়েল-টাইম ডেটা লোড
     function fetchCloudData() {
         db.collection("members").orderBy("id", "desc").onSnapshot((snapshot) => {
             memberDatabase = [];
-            snapshot.forEach((doc) => {
-                memberDatabase.push(doc.data());
-            });
+            snapshot.forEach((doc) => memberDatabase.push(doc.data()));
             executeSearch();
-        }, (error) => {
-            console.error("Firebase read error: ", error);
         });
     }
 
     function handleLogin() {
         const role = document.getElementById('loginRole').value;
         const pass = document.getElementById('loginPassword').value;
-
         if (pass === PASSWORDS[role]) {
             currentRole = role;
             document.getElementById('loginScreen').style.display = 'none';
@@ -370,10 +334,10 @@
 
         db.collection("members").doc(uid).set(newMember)
         .then(() => {
-            alert('সফলভাবে গ্লোবাল ক্লাউড ডাটাবেজে সংরক্ষিত হয়েছে!');
+            alert('সফলভাবে ক্লাউড ডাটাবেজে সংরক্ষিত হয়েছে!');
             document.getElementById('memberForm').reset();
             switchSection('searchSection', 'btnDashSearch');
-        }).catch((error) => alert("Error saving data: " + error));
+        }).catch((error) => alert("Error: " + error));
     }
 
     function executeSearch() {
@@ -393,7 +357,6 @@
     function renderLiveTable() {
         const tbody = document.getElementById('liveTableBody');
         tbody.innerHTML = '';
-
         currentFilteredList.forEach(member => {
             const tr = document.createElement('tr');
             const imgHtml = member.photo ? `<img src="${member.photo}" style="width:40px;height:45px;object-fit:cover;border-radius:4px;">` : 'কোনো ছবি নেই';
@@ -467,7 +430,6 @@
         localStorage.setItem('wa_gateway', waGateway);
         alert('আপডেট হয়েছে!');
     }
-
     function closePopup(id) { document.getElementById(id).style.display = 'none'; }
 </script>
 </body>
